@@ -3,10 +3,13 @@ package com.example.alex.cherrysports;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CalendarView;
+import android.widget.TextView;
 
 
 /**
@@ -58,15 +61,32 @@ public class PageTwo extends Fragment {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
+
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
+
         return inflater.inflate(R.layout.fragment_page_two, container, false);
     }
 
+    @Override
+    public void onViewCreated(View view, Bundle savedInstanceState){
+        CalendarView myCalendarView;
+        myCalendarView = (CalendarView) getView().findViewById(R.id.calendarView);
+
+        myCalendarView.setOnDateChangeListener(new CalendarView.OnDateChangeListener() {
+
+            @Override
+            public void onSelectedDayChange(CalendarView myCalendarView, int year,
+                                            int month, int dayOfMonth) {
+                Snackbar.make(myCalendarView, "CA MARCHE", Snackbar.LENGTH_LONG)
+                        .setAction("Action", null).show();
+            }
+        });
+    }
     // TODO: Rename method, update argument and hook method into UI event
     public void onButtonPressed(Uri uri) {
         if (mListener != null) {
@@ -97,6 +117,8 @@ public class PageTwo extends Fragment {
      */
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
+
+
         void onFragmentInteraction(Uri uri);
     }
 }
