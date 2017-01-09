@@ -9,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CalendarView;
+import android.widget.CheckedTextView;
 import android.widget.TextView;
 
 
@@ -76,6 +77,8 @@ public class PageTwo extends Fragment {
     public void onViewCreated(View view, Bundle savedInstanceState){
         CalendarView myCalendarView;
         myCalendarView = (CalendarView) getView().findViewById(R.id.calendarView);
+        final CheckedTextView myCheckedTextView;
+        myCheckedTextView = (CheckedTextView) getView().findViewById(R.id.checkedTextView);
 
         myCalendarView.setOnDateChangeListener(new CalendarView.OnDateChangeListener() {
 
@@ -84,6 +87,7 @@ public class PageTwo extends Fragment {
                                             int month, int dayOfMonth) {
                 Snackbar.make(myCalendarView, "CA MARCHE", Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();
+                myCheckedTextView.setText(String.valueOf(year));
             }
         });
     }
