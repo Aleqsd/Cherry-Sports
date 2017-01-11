@@ -3,14 +3,22 @@ package com.example.alex.cherrysports;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.CalendarView;
-import android.widget.TextView;
+import android.widget.ListView;
 
+import java.text.SimpleDateFormat;
+import java.util.List;
+import java.util.Random;
+import android.view.View.OnClickListener;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -20,11 +28,14 @@ import android.widget.TextView;
  * Use the {@link PageTwo#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class PageTwo extends Fragment {
+public class PageTwo extends Fragment implements OnClickListener{
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
+    private DatesDataSource datasource;
+    public ListView list;
+    public String myDate = null;
 
     // TODO: Rename and change types of parameters
     private String mParam1;
@@ -51,6 +62,7 @@ public class PageTwo extends Fragment {
         args.putString(ARG_PARAM1, param1);
         args.putString(ARG_PARAM2, param2);
         fragment.setArguments(args);
+
         return fragment;
     }
 
@@ -61,37 +73,75 @@ public class PageTwo extends Fragment {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
-
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-
         return inflater.inflate(R.layout.fragment_page_two, container, false);
     }
 
     @Override
-    public void onViewCreated(View view, Bundle savedInstanceState){
-        CalendarView myCalendarView;
-        myCalendarView = (CalendarView) getView().findViewById(R.id.calendarView);
+    public void onViewCreated(View view, Bundle savedInstanceState) {
+        Button addButton = (Button) getView().findViewById(R.id.buttonAdd);
+        Button deleteButton = (Button) getView().findViewById(R.id.buttonDelete);
+        CalendarView myCalendarView = (CalendarView) getView().findViewById(R.id.calendarView);
+
+        addButton.setOnClickListener(this);
+        deleteButton.setOnClickListener(this);
+
 
         myCalendarView.setOnDateChangeListener(new CalendarView.OnDateChangeListener() {
 
             @Override
-            public void onSelectedDayChange(CalendarView myCalendarView, int year,
-                                            int month, int dayOfMonth) {
-                Snackbar.make(myCalendarView, "CA MARCHE", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+            public void onSelectedDayChange(@NonNull CalendarView myCalendarView, int year, int month, int dayOfMonth)
+            {
+                //Snackbar.make(myCalendarView, "CA MARCHE", Snackbar.LENGTH_LONG).setAction("Action", null).show();
+                myDate = dayOfMonth + "/" + month+1 + "/" + year;
             }
         });
+
+        datasource = new DatesDataSource(this.getContext());
+        datasource.open();
+        list = (ListView) getView().findViewById(R.id.listView);
+        List<Date> values = datasource.getAllDates();
+
+        // utilisez SimpleCursorAdapter pour afficher les
+        // éléments dans une ListView
+        ArrayAdapter<Date> adapter = new ArrayAdapter<>(this.getContext(),
+                android.R.layout.simple_list_item_1, values);
+        list.setAdapter(adapter);
     }
     // TODO: Rename method, update argument and hook method into UI event
     public void onButtonPressed(Uri uri) {
         if (mListener != null) {
             mListener.onFragmentInteraction(uri);
         }
+    }
+
+    public void onClick(View view) {
+        @SuppressWarnings("unchecked")
+        ArrayAdapter<Date> adapter = (ArrayAdapter<Date>) list.getAdapter();
+        Date date;
+        switch (view.getId()) {
+            case R.id.buttonAdd:
+                //int nextInt = new Random().nextInt(3);
+                // enregistrer le nouveau commentaire dans la base de données
+                if (myDate != null)
+                {
+                    date = datasource.createDate(myDate);
+                    adapter.add(date);
+                }
+                break;
+            case R.id.buttonDelete:
+                if (list.getAdapter().getCount() > 0) {
+                    date = (Date) list.getAdapter().getItem(0);
+                    datasource.deleteDate(date);
+                    adapter.remove(date);
+                }
+                break;
+        }
+        adapter.notifyDataSetChanged();
     }
 
     @Override
