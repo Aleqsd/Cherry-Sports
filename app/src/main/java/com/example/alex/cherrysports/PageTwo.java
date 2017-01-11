@@ -1,6 +1,7 @@
 package com.example.alex.cherrysports;
 
 import android.content.Context;
+import android.media.Image;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -13,12 +14,15 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CalendarView;
+import android.widget.ImageView;
 import android.widget.ListView;
 
 import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.Random;
 import android.view.View.OnClickListener;
+
+import pl.droidsonroids.gif.GifImageView;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -36,6 +40,8 @@ public class PageTwo extends Fragment implements OnClickListener{
     private DatesDataSource datasource;
     public ListView list;
     public String myDate = null;
+    public GifImageView myGif;
+
 
     // TODO: Rename and change types of parameters
     private String mParam1;
@@ -86,10 +92,10 @@ public class PageTwo extends Fragment implements OnClickListener{
         Button addButton = (Button) getView().findViewById(R.id.buttonAdd);
         Button deleteButton = (Button) getView().findViewById(R.id.buttonDelete);
         CalendarView myCalendarView = (CalendarView) getView().findViewById(R.id.calendarView);
+        myGif = (GifImageView) getView().findViewById(R.id.piggyGif);
 
         addButton.setOnClickListener(this);
         deleteButton.setOnClickListener(this);
-
 
         myCalendarView.setOnDateChangeListener(new CalendarView.OnDateChangeListener() {
 
@@ -127,10 +133,15 @@ public class PageTwo extends Fragment implements OnClickListener{
             case R.id.buttonAdd:
                 //int nextInt = new Random().nextInt(3);
                 // enregistrer le nouveau commentaire dans la base de données
-                if (myDate != null)
-                {
+                if (myDate != null) {
                     date = datasource.createDate(myDate);
                     adapter.add(date);
+                    if (myGif != null){
+                        myGif.setVisibility(View.VISIBLE);
+                        myGif.postDelayed(new Runnable(){
+                            public void run(){ myGif.setVisibility(View.GONE);}
+                        },2000);
+                    }
                 }
                 break;
             case R.id.buttonDelete:
