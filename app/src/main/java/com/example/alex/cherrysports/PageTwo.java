@@ -1,6 +1,8 @@
 package com.example.alex.cherrysports;
 
 import android.content.Context;
+import android.content.res.Resources;
+import android.graphics.drawable.Drawable;
 import android.media.Image;
 import android.net.Uri;
 import android.os.Bundle;
@@ -8,6 +10,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.res.ResourcesCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,6 +24,8 @@ import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.Random;
 import android.view.View.OnClickListener;
+
+import net.darkion.AchievementUnlockedLib.AchievementUnlocked;
 
 import pl.droidsonroids.gif.GifImageView;
 
@@ -104,6 +109,9 @@ public class PageTwo extends Fragment implements OnClickListener{
             {
                 //Snackbar.make(myCalendarView, "CA MARCHE", Snackbar.LENGTH_LONG).setAction("Action", null).show();
                 myDate = dayOfMonth + "/" + month+1 + "/" + year;
+
+                AchievementUnlocked test= new AchievementUnlocked(getContext().getApplicationContext());
+                test.setTitle("Title").setIcon(getContext().getDrawable(R.drawable.ic_menu_send)).setSubTitle("Subtitle").build().show();
             }
         });
 
